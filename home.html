@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Johnny Depp Premium Fan Club</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
+
+<script src="https://js.stripe.com/v3/"></script>
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<script src="https://checkout.flutterwave.com/v3.js"></script>
+
+<style>
+body{
+    margin:0;
+    font-family:'Poppins',sans-serif;
+    background:#0c0c0c;
+    color:white;
+}
+header{
+    height:100vh;
+    background:linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.7)),
+    url('https://upload.wikimedia.org/wikipedia/commons/2/21/Johnny_Depp_2020.jpg');
+    background-size:cover;
+    background-position:center;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+}
+header h1{
+    font-family:'Playfair Display',serif;
+    font-size:60px;
+    color:gold;
+}
+header p{
+    font-size:20px;
+    max-width:600px;
+}
+.btn{
+    padding:12px 30px;
+    margin-top:20px;
+    background:gold;
+    color:black;
+    border:none;
+    font-weight:bold;
+    cursor:pointer;
+    border-radius:5px;
+}
+section{
+    padding:60px 20px;
+    text-align:center;
+}
+.cards{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:30px;
+}
+.card{
+    background:#1a1a1a;
+    padding:30px;
+    width:300px;
+    border-radius:10px;
+    box-shadow:0 0 15px rgba(255,215,0,0.3);
+}
+.card h3{
+    color:gold;
+}
+select{
+    padding:10px;
+    width:100%;
+    margin-top:10px;
+}
+footer{
+    background:black;
+    padding:20px;
+    text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>Johnny Depp Premium Fan Club</h1>
+    <p>Welcome to the exclusive fan community celebrating the legendary actor and artist. Join the official fan experience today.</p>
+    <button class="btn" onclick="scrollToCards()">Join Now</button>
+</header>
+
+<section>
+    <h2>About Johnny Depp</h2>
+    <p>Johnny Depp is one of Hollywood’s most iconic actors, known for unforgettable performances in blockbuster films and unique artistic expression.</p>
+</section>
+
+<section id="membership">
+    <h2>Choose Your Membership</h2>
+    <div class="cards">
+
+        <div class="card">
+            <h3>Standard Fan Card</h3>
+            <p>$50</p>
+            <select id="standardMethod">
+                <option value="stripe">Stripe</option>
+                <option value="paystack">Paystack</option>
+                <option value="flutterwave">Flutterwave</option>
+            </select>
+            <button class="btn" onclick="pay(50,'Standard')">Pay Now</button>
+        </div>
+
+        <div class="card">
+            <h3>VIP Fan Card</h3>
+            <p>$150</p>
+            <select id="vipMethod">
+                <option value="stripe">Stripe</option>
+                <option value="paystack">Paystack</option>
+                <option value="flutterwave">Flutterwave</option>
+            </select>
+            <button class="btn" onclick="pay(150,'VIP')">Pay Now</button>
+        </div>
+
+    </div>
+</section>
+
+<footer>
+    <p>© 2026 Johnny Depp Premium Fan Club</p>
+</footer>
+
+<script>
+
+function scrollToCards(){
+    document.getElementById("membership").scrollIntoView({behavior:'smooth'});
+}
+
+function pay(amount,type){
+    let method = document.querySelector("#"+type.toLowerCase()+"Method")?.value 
+        || document.querySelector("#standardMethod").value;
+
+    if(method === "stripe"){
+        payWithStripe(amount,type);
+    }
+    else if(method === "paystack"){
+        payWithPaystack(amount,type);
+    }
+    else if(method === "flutterwave"){
+        payWithFlutterwave(amount,type);
+    }
+}
+
+// STRIPE
+function payWithStripe(amount,type){
+    var stripe = Stripe("YOUR_STRIPE_PUBLIC_KEY");
+    alert("Stripe requires backend server for full integration.");
+}
+
+// PAYSTACK
+function payWithPaystack(amount,type){
+    var handler = PaystackPop.setup({
+        key: 'YOUR_PAYSTACK_PUBLIC_KEY',
+        email: 'customer@email.com',
+        amount: amount * 100,
+        currency: "USD",
+        callback: function(response){
+            alert(type + " Payment Successful!");
+        }
+    });
+    handler.openIframe();
+}
+
+// FLUTTERWAVE
+function payWithFlutterwave(amount,type){
+    FlutterwaveCheckout({
+        public_key: "YOUR_FLUTTERWAVE_PUBLIC_KEY",
+        tx_ref: "tx_"+Date.now(),
+        amount: amount,
+        currency: "USD",
+        payment_options: "card, banktransfer, ussd",
+        customer: {
+            email: "customer@email.com",
+        },
+        callback: function(data) {
+            alert(type + " Payment Successful!");
+        }
+    });
+}
+
+</script>
+
+</body>
+</html>
